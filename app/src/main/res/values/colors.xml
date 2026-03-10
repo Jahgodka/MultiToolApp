@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="czarny">#FF000000</color>
+    <color name="bialy">#FFFFFFFF</color>
+    <color name="bardzoJasnySzary">#D9D8D8</color>
+    <color name="jasnySzary">#999797</color>
+    <color name="szary">#616060</color>
+    <color name="ciemnySzary">#2F2F2F</color>
+    <color name="niebieskiGlowny">#1B74BC</color>
+    <color name="czerwonyGlowny">#E70505</color>
+    <color name="fiolet">#AC23E9</color>
+    <color name="ciemnyPomarancz">#BD5F03</color>
+    <color name="jasnyNiebieski">#2196F4</color>
+</resources>
