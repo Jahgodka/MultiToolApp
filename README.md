@@ -10,6 +10,8 @@ A modular Android application built with Jetpack Compose, designed as a scalable
 ## Included Modules
 
 ### 1. Date Shift Calculator
+![Date Calculator Main Screen](screenshots/date_calculator_main.png)
+
 A utility to safely calculate past or future dates by adding or subtracting days, months, or years.
 * **Core:** Driven by `java.time.LocalDate` and a native `DatePickerDialog`.
 * **Validation:** Implements strict input validation (limits shifts to +/- 100,000 units) to prevent `DateTimeException` crashes and UI overflow.
