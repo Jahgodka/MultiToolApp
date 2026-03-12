@@ -58,9 +58,9 @@ fun Tools() {
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Pusty Projekt 2", color = colorResource(id = R.color.bialy)) },
+                            text = { Text("Różnica Dat", color = colorResource(id = R.color.bialy)) },
                             onClick = {
-                                currentScreen = "Pusty Projekt 2"
+                                currentScreen = "Różnica Dat"
                                 isMenuExpanded = false
                             }
                         )
@@ -78,7 +78,7 @@ fun Tools() {
         ) {
             when (currentScreen) {
                 "Kalkulator Dat" -> DateCalculatorScreen()
-                "Pusty Projekt 2" -> Text("Placeholder", modifier = Modifier.padding(16.dp))
+                "Różnica Dat" -> DateDifferenceScreen()
             }
         }
     }

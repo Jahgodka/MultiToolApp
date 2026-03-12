@@ -18,5 +18,10 @@ A utility to safely calculate past or future dates by adding or subtracting days
 * **Formatting:** Era-aware formatting (BCE/CE via `Locale`) to properly handle edge cases for large historical or future shifts.
 * **UI/UX:** Custom state-driven color logic applied to disabled/focused states using `colorResource`.
 
-### 2. Project 2
-*Placeholder for future implementation.*
+### 2. Date Difference Calculator
+![Date Difference Main Screen](screenshots/date_difference_main.png)
+
+A utility to calculate the exact absolute difference between two specific dates and times, breaking down the result into days, hours, minutes, and seconds.
+* **Core:** Utilizes `java.time.LocalDateTime` and `java.time.Duration` for highly accurate, millisecond-level time math.
+* **UI/UX:** Implements parallel `Row` structures combining `DatePickerDialog` and `TimePickerDialog`. Features a custom "Now" trailing icon button that captures the exact current system time (including seconds, bypassing standard Android UI limitations).
+* **Calculation:** Employs absolute duration parsing (`abs()`) and modulo arithmetic to properly separate total time into distinct, readable units without overlap.
