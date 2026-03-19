@@ -64,6 +64,13 @@ fun Tools() {
                                 isMenuExpanded = false
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Konwerter Liczb", color = colorResource(id = R.color.bialy)) },
+                            onClick = {
+                                currentScreen = "Konwerter Liczb"
+                                isMenuExpanded = false
+                            }
+                        )
                     }
                 }
             )
@@ -79,6 +86,7 @@ fun Tools() {
             when (currentScreen) {
                 "Kalkulator Dat" -> DateCalculatorScreen()
                 "Różnica Dat" -> DateDifferenceScreen()
+                "Konwerter Liczb" -> NumberConverterScreen()
             }
         }
     }

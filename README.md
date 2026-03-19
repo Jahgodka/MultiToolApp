@@ -25,3 +25,11 @@ A utility to calculate the exact absolute difference between two specific dates 
 * **Core:** Utilizes `java.time.LocalDateTime` and `java.time.Duration` for highly accurate, millisecond-level time math.
 * **UI/UX:** Implements parallel `Row` structures combining `DatePickerDialog` and `TimePickerDialog`. Features a custom "Now" trailing icon button that captures the exact current system time (including seconds, bypassing standard Android UI limitations).
 * **Calculation:** Employs absolute duration parsing (`abs()`) and modulo arithmetic to properly separate total time into distinct, readable units without overlap.
+
+### 3. Number Base Converter
+![Number Converter Main Screen](screenshots/number_converter_main.png)
+
+A real-time decimal number converter demonstrating reactive state management in Jetpack Compose without explicit action buttons.
+* **Core:** Utilizes Kotlin's native `toString(radix)` function to convert standard `Int32` numbers into Binary (Base2), Octal (Base8), Hexadecimal (Base16), and Alphanumeric Base36.
+* **Validation:** Employs strict Regex filtering (`"^(0|-|-[1-9][0-9]{0,9}|[1-9][0-9]{0,9})$"`) directly on the input field to block leading zeros and limit string length, preventing memory overflow before computation even occurs.
+* **UI/UX:** Uses `RadioButton` components inside a `selectableGroup`. The `onClick` events are elevated to the `Row` level to maximize the touch target area, adhering to mobile UX best practices.
