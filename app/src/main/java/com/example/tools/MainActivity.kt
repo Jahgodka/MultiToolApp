@@ -71,6 +71,13 @@ fun Tools() {
                                 isMenuExpanded = false
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Mapa Współrzędnych", color = colorResource(id = R.color.bialy)) },
+                            onClick = {
+                                currentScreen = "Mapa Współrzędnych"
+                                isMenuExpanded = false
+                            }
+                        )
                     }
                 }
             )
@@ -87,6 +94,7 @@ fun Tools() {
                 "Kalkulator Dat" -> DateCalculatorScreen()
                 "Różnica Dat" -> DateDifferenceScreen()
                 "Konwerter Liczb" -> NumberConverterScreen()
+                "Mapa Współrzędnych" -> MapScreen()
             }
         }
     }

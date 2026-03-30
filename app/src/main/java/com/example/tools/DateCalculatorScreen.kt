@@ -2,6 +2,7 @@ package com.example.tools
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -121,7 +122,7 @@ fun DateCalculatorScreen() {
             ExposedDropdownMenu(
                 expanded = expandedUnitMenu,
                 onDismissRequest = { expandedUnitMenu = false },
-                containerColor = colorResource(id = R.color.szary)
+                modifier = Modifier.background(colorResource(id = R.color.szary))
             ) {
                 listOf("Dni", "Miesiące", "Lata").forEach { unit ->
                     DropdownMenuItem(

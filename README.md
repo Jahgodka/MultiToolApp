@@ -33,3 +33,11 @@ A real-time decimal number converter demonstrating reactive state management in 
 * **Core:** Utilizes Kotlin's native `toString(radix)` function to convert standard `Int32` numbers into Binary (Base2), Octal (Base8), Hexadecimal (Base16), and Alphanumeric Base36.
 * **Validation:** Employs strict Regex filtering (`"^(0|-|-[1-9][0-9]{0,9}|[1-9][0-9]{0,9})$"`) directly on the input field to block leading zeros and limit string length, preventing memory overflow before computation even occurs.
 * **UI/UX:** Uses `RadioButton` components inside a `selectableGroup`. The `onClick` events are elevated to the `Row` level to maximize the touch target area, adhering to mobile UX best practices.
+
+### 4. Map Coordinates Viewer
+![Map Coordinates Main Screen](screenshots/map_coordinates_main.png)
+
+A geographic visualization tool that renders an interactive map based on user-provided coordinates.
+* **Core:** Integrates the `com.google.maps.android:maps-compose` library for declarative UI map rendering. Uses `CameraPositionState` to smoothly animate the camera to the target location with a district-level zoom (15f).
+* **Validation:** Implements mathematical bounding box validation (Latitude: -90 to 90, Longitude: -180 to 180) alongside Regex filtering to prevent invalid API calls and map rendering errors. Smart casting is utilized to safely unwrap nullable coordinate values.
+* **Security:** The Google Maps API Key is securely injected during the build process via `local.properties` and Gradle's `manifestPlaceholders`, ensuring credentials are never exposed in the public repository.
