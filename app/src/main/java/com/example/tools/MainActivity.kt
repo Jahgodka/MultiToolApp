@@ -78,6 +78,13 @@ fun Tools() {
                                 isMenuExpanded = false
                             }
                         )
+                        DropdownMenuItem(
+                            text = {Text("Menedżer List", color = colorResource(id = R.color.bialy)) },
+                            onClick = {
+                                currentScreen = "Menedżer List"
+                                isMenuExpanded = false
+                            }
+                        )
                     }
                 }
             )
@@ -95,6 +102,7 @@ fun Tools() {
                 "Różnica Dat" -> DateDifferenceScreen()
                 "Konwerter Liczb" -> NumberConverterScreen()
                 "Mapa Współrzędnych" -> MapScreen()
+                "Menedżer List" -> ListTransferScreen()
             }
         }
     }

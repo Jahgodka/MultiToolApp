@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,19 +22,20 @@ fun MapScreen() {
     var latInput by remember { mutableStateOf("51.7592") }
     var lngInput by remember { mutableStateOf("19.4560") }
 
-    val lat = latInput.toDoubleOrNull()
-    val lng = lngInput.toDoubleOrNull()
+    val rawLat = latInput.toDoubleOrNull()
+    val rawLng = lngInput.toDoubleOrNull()
 
-    val isLatValid = lat != null && lat in -90.0..90.0
-    val isLngValid = lng != null && lng in -180.0..180.0
+    val displayLat = rawLat?.coerceIn(-85.0511, 85.0511)
+
+    val displayLng = rawLng?.let { ((it % 360.0) + 540.0) % 360.0 - 180.0 }
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(51.7592, 19.4560), 15f)
     }
 
-    if (lat != null && lng != null && lat in -90.0..90.0 && lng in -180.0..180.0) {
-        LaunchedEffect(lat, lng) {
-            val newLocation = LatLng(lat, lng)
+    if (displayLat != null && displayLng != null) {
+        LaunchedEffect(displayLat, displayLng) {
+            val newLocation = LatLng(displayLat, displayLng)
             cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(newLocation, 15f))
         }
     }
@@ -57,15 +59,13 @@ fun MapScreen() {
                     }
                 },
                 label = { Text("Lat (Szerokość)") },
-                isError = !isLatValid && latInput.isNotEmpty(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
                     unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
                     focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski),
-                    errorBorderColor = colorResource(id = R.color.czerwonyGlowny)
+                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski)
                 )
             )
 
@@ -77,45 +77,48 @@ fun MapScreen() {
                     }
                 },
                 label = { Text("Lng (Długość)") },
-                isError = !isLngValid && lngInput.isNotEmpty(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
                     unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
                     focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski),
-                    errorBorderColor = colorResource(id = R.color.czerwonyGlowny)
+                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski)
                 )
             )
         }
 
-        if (!isLatValid && latInput.isNotEmpty()) {
-            Text("Błąd: Szerokość musi być w przedziale od -90 do 90.", color = colorResource(id = R.color.czerwonyGlowny), fontWeight = FontWeight.Bold)
-        }
-        if (!isLngValid && lngInput.isNotEmpty()) {
-            Text("Błąd: Długość musi być w przedziale od -180 do 180.", color = colorResource(id = R.color.czerwonyGlowny), fontWeight = FontWeight.Bold)
+        // Komunikat informacyjny dla użytkownika, jak system interpretuje wpisane przez niego abstrakcyjne liczby
+        if (displayLat != null && displayLng != null) {
+            val formatLat = String.format(Locale.US, "%.4f", displayLat)
+            val formatLng = String.format(Locale.US, "%.4f", displayLng)
+
+            Text(
+                text = "Znormalizowana pozycja mapy: $formatLat, $formatLng",
+                color = colorResource(id = R.color.jasnyNiebieski),
+                style = MaterialTheme.typography.labelMedium
+            )
         }
 
         Card(
             modifier = Modifier.fillMaxSize(),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
         ) {
-            if (isLatValid && isLngValid) {
+            if (displayLat != null && displayLng != null) {
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
                     uiSettings = MapUiSettings(zoomControlsEnabled = true)
                 ) {
                     Marker(
-                        state = MarkerState(position = LatLng(lat, lng)),
-                        title = "Wybrane koordynaty",
-                        snippet = "Lat: $lat, Lng: $lng"
+                        state = MarkerState(position = LatLng(displayLat, displayLng)),
+                        title = "Znormalizowane koordynaty",
+                        snippet = "Lat: $displayLat, Lng: $displayLng"
                     )
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Wprowadź poprawne współrzędne, aby wyrenderować mapę.", color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text("Wprowadź liczby, aby wyrenderować mapę.", color = colorResource(id = R.color.bardzoJasnySzary))
                 }
             }
         }

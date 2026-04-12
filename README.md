@@ -39,5 +39,13 @@ A real-time decimal number converter demonstrating reactive state management in 
 
 A geographic visualization tool that renders an interactive map based on user-provided coordinates.
 * **Core:** Integrates the `com.google.maps.android:maps-compose` library for declarative UI map rendering. Uses `CameraPositionState` to smoothly animate the camera to the target location with a district-level zoom (15f).
-* **Validation:** Implements mathematical bounding box validation (Latitude: -90 to 90, Longitude: -180 to 180) alongside Regex filtering to prevent invalid API calls and map rendering errors. Smart casting is utilized to safely unwrap nullable coordinate values.
+* **Validation & Normalization:** Replaced strict bounding boxes with intelligent normalization. Latitude is clamped to `+/- 85.0511` to respect Web Mercator (EPSG:3857) rendering limits, preventing engine crashes at the poles. Longitude utilizes modulo arithmetic (`((lng % 360) + 540) % 360 - 180`) to dynamically wrap around the globe, ensuring the map pin always renders accurately regardless of input magnitude.
 * **Security:** The Google Maps API Key is securely injected during the build process via `local.properties` and Gradle's `manifestPlaceholders`, ensuring credentials are never exposed in the public repository.
+
+### 5. List Transfer Manager
+![List Transfer Main Screen](screenshots/list_transfer_main.png)
+
+An interactive dual-list management system demonstrating advanced state handling and efficient list rendering in Compose.
+* **Core:** Utilizes `mutableStateListOf` for reactive collections and `LazyColumn` for highly optimized, memory-efficient rendering of dynamic lists (loading only visible items into RAM).
+* **State Management:** Implements a complex selection state using `Pair<Int, Int>?` to accurately track the active list and item index. This dynamically controls the enabled/disabled states of contextual actions (transfer arrows, delete button).
+* **UI/UX:** Features real-time automatic numbering that adjusts dynamically upon item transfer or removal. Strict input limits (20 characters) and `TextOverflow.Ellipsis` prevent UI breakage on narrow screens. Utilizes Material icons for spatial efficiency.
