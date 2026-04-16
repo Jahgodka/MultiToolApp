@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -21,20 +22,22 @@ import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
+enum class DateUnit { DAYS, MONTHS, YEARS }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateCalculatorScreen() {
     var startDate by remember { mutableStateOf(LocalDate.now()) }
     var shiftAmount by remember { mutableStateOf("") }
-    var selectedUnit by remember { mutableStateOf("Dni") }
+    var selectedUnit by remember { mutableStateOf(DateUnit.DAYS) }
     var expandedUnitMenu by remember { mutableStateOf(false) }
 
     var resultDate by remember { mutableStateOf<LocalDate?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
-    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy G", Locale.forLanguageTag("pl-PL"))
+
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy G", Locale.getDefault())
 
     val calendar = Calendar.getInstance()
     calendar.set(startDate.year, startDate.monthValue - 1, startDate.dayOfMonth)
@@ -50,6 +53,14 @@ fun DateCalculatorScreen() {
         calendar.get(Calendar.DAY_OF_MONTH)
     )
 
+    val getUnitLabel = @Composable { unit: DateUnit ->
+        when (unit) {
+            DateUnit.DAYS -> stringResource(id = R.string.unit_days)
+            DateUnit.MONTHS -> stringResource(id = R.string.unit_months)
+            DateUnit.YEARS -> stringResource(id = R.string.unit_years)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +71,7 @@ fun DateCalculatorScreen() {
         OutlinedTextField(
             value = startDate.format(dateFormatter),
             onValueChange = { },
-            label = { Text("Data początkowa") },
+            label = { Text(stringResource(id = R.string.label_initial_date)) },
             enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +90,7 @@ fun DateCalculatorScreen() {
                 errorMessage = null
                 resultDate = null
             },
-            label = { Text("Wartość przesunięcia") },
+            label = { Text(stringResource(id = R.string.label_shift_amount)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -102,10 +113,10 @@ fun DateCalculatorScreen() {
             onExpandedChange = { expandedUnitMenu = !expandedUnitMenu }
         ) {
             OutlinedTextField(
-                value = selectedUnit,
+                value = getUnitLabel(selectedUnit),
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Jednostka") },
+                label = { Text(stringResource(id = R.string.label_unit)) },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedUnitMenu) },
                 modifier = Modifier
                     .menuAnchor()
@@ -124,9 +135,9 @@ fun DateCalculatorScreen() {
                 onDismissRequest = { expandedUnitMenu = false },
                 modifier = Modifier.background(colorResource(id = R.color.szary))
             ) {
-                listOf("Dni", "Miesiące", "Lata").forEach { unit ->
+                DateUnit.values().forEach { unit ->
                     DropdownMenuItem(
-                        text = { Text(unit, color = colorResource(id = R.color.bardzoJasnySzary)) },
+                        text = { Text(getUnitLabel(unit), color = colorResource(id = R.color.bardzoJasnySzary)) },
                         onClick = {
                             selectedUnit = unit
                             expandedUnitMenu = false
@@ -137,18 +148,22 @@ fun DateCalculatorScreen() {
             }
         }
 
+        val errInvalidNumber = stringResource(id = R.string.err_invalid_number)
+        val errShiftTooLarge = stringResource(id = R.string.err_shift_too_large)
+        val errDateOutOfBounds = stringResource(id = R.string.err_date_out_of_bounds)
+
         Button(
             onClick = {
                 val amount = shiftAmount.toLongOrNull()
 
                 if (amount == null) {
-                    errorMessage = "Podaj poprawną wartość liczbową."
+                    errorMessage = errInvalidNumber
                     resultDate = null
                     return@Button
                 }
 
                 if (amount > 100000 || amount < -100000) {
-                    errorMessage = "Wartość przesunięcia jest zbyt duża (limit: +/- 100 000)."
+                    errorMessage = errShiftTooLarge
                     resultDate = null
                     return@Button
                 }
@@ -157,20 +172,19 @@ fun DateCalculatorScreen() {
 
                 try {
                     resultDate = when (selectedUnit) {
-                        "Dni" -> startDate.plusDays(amount)
-                        "Miesiące" -> startDate.plusMonths(amount)
-                        "Lata" -> startDate.plusYears(amount)
-                        else -> startDate
+                        DateUnit.DAYS -> startDate.plusDays(amount)
+                        DateUnit.MONTHS -> startDate.plusMonths(amount)
+                        DateUnit.YEARS -> startDate.plusYears(amount)
                     }
                 } catch (e: Exception) {
-                    errorMessage = "Błąd krytyczny: Data poza obsługiwanym zakresem."
+                    errorMessage = errDateOutOfBounds
                     resultDate = null
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.niebieskiGlowny))
         ) {
-            Text("Oblicz przesunięcie", color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.btn_calculate_shift), color = colorResource(id = R.color.bardzoJasnySzary))
         }
 
         errorMessage?.let {
@@ -188,7 +202,7 @@ fun DateCalculatorScreen() {
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Nowa data:", color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(stringResource(id = R.string.title_new_date), color = colorResource(id = R.color.bardzoJasnySzary))
                     Text(
                         text = it.format(dateFormatter),
                         style = MaterialTheme.typography.headlineMedium,

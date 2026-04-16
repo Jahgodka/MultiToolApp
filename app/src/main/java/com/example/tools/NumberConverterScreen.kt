@@ -9,23 +9,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
+enum class NumberFormatType { BINARY, OCTAL, HEXADECIMAL, BASE36 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NumberConverterScreen() {
     var inputValue by remember { mutableStateOf("") }
+    var selectedFormat by remember { mutableStateOf(NumberFormatType.BINARY) }
 
-    val formats = listOf(
-        "Binarny (Podstawa 2)",
-        "Ósemkowy (Podstawa 8)",
-        "Szesnastkowy (Podstawa 16)",
-        "Base36 (Podstawa 36)"
-    )
-    var selectedFormat by remember { mutableStateOf(formats[0]) }
+    val getFormatLabel = @Composable { format: NumberFormatType ->
+        when (format) {
+            NumberFormatType.BINARY -> stringResource(id = R.string.format_binary)
+            NumberFormatType.OCTAL -> stringResource(id = R.string.format_octal)
+            NumberFormatType.HEXADECIMAL -> stringResource(id = R.string.format_hex)
+            NumberFormatType.BASE36 -> stringResource(id = R.string.format_base36)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -43,7 +48,7 @@ fun NumberConverterScreen() {
                     inputValue = input
                 }
             },
-            label = { Text("Wpisz liczbę dziesiętną") },
+            label = { Text(stringResource(id = R.string.label_enter_decimal)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -63,9 +68,9 @@ fun NumberConverterScreen() {
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Wybierz format wyjściowy:", color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.label_choose_format), color = colorResource(id = R.color.bardzoJasnySzary))
 
-            formats.forEach { format ->
+            NumberFormatType.entries.forEach { format ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,7 +91,7 @@ fun NumberConverterScreen() {
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = format, color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(text = getFormatLabel(format), color = colorResource(id = R.color.bardzoJasnySzary))
                 }
             }
         }
@@ -94,17 +99,20 @@ fun NumberConverterScreen() {
         val number = inputValue.toLongOrNull()
         val limit = 2147483647L
 
+        val errNoInput = stringResource(id = R.string.err_no_input)
+        val errInvalidFormat = stringResource(id = R.string.err_invalid_format)
+        val errLimitExceeded = stringResource(id = R.string.err_limit_exceeded)
+
         val (resultText, resultColor) = when {
-            inputValue.isEmpty() -> Pair("Brak danych wejściowych", colorResource(id = R.color.bardzoJasnySzary))
-            number == null -> Pair("Błąd: Nieprawidłowy format liczby", colorResource(id = R.color.czerwonyGlowny))
-            number > limit || number < -limit -> Pair("Błąd: Przekroczono limit (+/- 2 147 483 647)", colorResource(id = R.color.czerwonyGlowny))
+            inputValue.isEmpty() -> Pair(errNoInput, colorResource(id = R.color.bardzoJasnySzary))
+            number == null -> Pair(errInvalidFormat, colorResource(id = R.color.czerwonyGlowny))
+            number > limit || number < -limit -> Pair(errLimitExceeded, colorResource(id = R.color.czerwonyGlowny))
             else -> {
                 val converted = when (selectedFormat) {
-                    formats[0] -> number.toString(2)
-                    formats[1] -> number.toString(8)
-                    formats[2] -> number.toString(16).uppercase()
-                    formats[3] -> number.toString(36).uppercase()
-                    else -> ""
+                    NumberFormatType.BINARY -> number.toString(2)
+                    NumberFormatType.OCTAL -> number.toString(8)
+                    NumberFormatType.HEXADECIMAL -> number.toString(16).uppercase()
+                    NumberFormatType.BASE36 -> number.toString(36).uppercase()
                 }
                 Pair(converted, colorResource(id = R.color.jasnyNiebieski))
             }
@@ -120,7 +128,7 @@ fun NumberConverterScreen() {
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Wynik:", color = colorResource(id = R.color.bardzoJasnySzary))
+                Text(stringResource(id = R.string.title_result), color = colorResource(id = R.color.bardzoJasnySzary))
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = resultText,

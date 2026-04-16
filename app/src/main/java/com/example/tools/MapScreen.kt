@@ -1,3 +1,5 @@
+@file:Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
+
 package com.example.tools
 
 import androidx.compose.foundation.layout.*
@@ -7,7 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,7 +28,6 @@ fun MapScreen() {
     val rawLng = lngInput.toDoubleOrNull()
 
     val displayLat = rawLat?.coerceIn(-85.0511, 85.0511)
-
     val displayLng = rawLng?.let { ((it % 360.0) + 540.0) % 360.0 - 180.0 }
 
     val cameraPositionState = rememberCameraPositionState {
@@ -58,7 +59,7 @@ fun MapScreen() {
                         latInput = input
                     }
                 },
-                label = { Text("Lat (Szerokość)") },
+                label = { Text(stringResource(id = R.string.label_latitude)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -76,7 +77,7 @@ fun MapScreen() {
                         lngInput = input
                     }
                 },
-                label = { Text("Lng (Długość)") },
+                label = { Text(stringResource(id = R.string.label_longitude)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -88,13 +89,12 @@ fun MapScreen() {
             )
         }
 
-        // Komunikat informacyjny dla użytkownika, jak system interpretuje wpisane przez niego abstrakcyjne liczby
         if (displayLat != null && displayLng != null) {
             val formatLat = String.format(Locale.US, "%.4f", displayLat)
             val formatLng = String.format(Locale.US, "%.4f", displayLng)
 
             Text(
-                text = "Znormalizowana pozycja mapy: $formatLat, $formatLng",
+                text = stringResource(id = R.string.msg_normalized_position, formatLat, formatLng),
                 color = colorResource(id = R.color.jasnyNiebieski),
                 style = MaterialTheme.typography.labelMedium
             )
@@ -112,13 +112,13 @@ fun MapScreen() {
                 ) {
                     Marker(
                         state = MarkerState(position = LatLng(displayLat, displayLng)),
-                        title = "Znormalizowane koordynaty",
-                        snippet = "Lat: $displayLat, Lng: $displayLng"
+                        title = stringResource(id = R.string.marker_title_normalized),
+                        snippet = stringResource(id = R.string.marker_snippet_coords, displayLat.toString(), displayLng.toString())
                     )
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Wprowadź liczby, aby wyrenderować mapę.", color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(stringResource(id = R.string.msg_enter_numbers_map), color = colorResource(id = R.color.bardzoJasnySzary))
                 }
             }
         }

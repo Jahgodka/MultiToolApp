@@ -7,9 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,20 +17,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+enum class ListSide { LEFT, RIGHT }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListTransferScreen() {
-    val leftList = remember { mutableStateListOf("Mleko", "Chleb", "Jajka", "Masło") }
+    val leftList = remember { mutableStateListOf<String>() }
     val rightList = remember { mutableStateListOf<String>() }
 
     var inputText by remember { mutableStateOf("") }
     val maxLength = 20
 
-    var selection by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var selection by remember { mutableStateOf<Pair<ListSide, Int>?>(null) }
 
     Column(
         modifier = Modifier
@@ -46,7 +49,7 @@ fun ListTransferScreen() {
             OutlinedTextField(
                 value = inputText,
                 onValueChange = { if (it.length <= maxLength) inputText = it },
-                label = { Text("Nowy element ($maxLength znaków)") },
+                label = { Text(stringResource(id = R.string.label_new_item, maxLength)) }, // Parametryzowany string
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -67,14 +70,14 @@ fun ListTransferScreen() {
                 },
                 modifier = Modifier.background(colorResource(id = R.color.niebieskiGlowny), shape = RoundedCornerShape(8.dp))
             ) {
-                Icon(Icons.Filled.Add, contentDescription = "Dodaj", tint = colorResource(id = R.color.bialy))
+                Icon(Icons.Filled.Add, contentDescription = stringResource(id = R.string.desc_add), tint = colorResource(id = R.color.bialy))
             }
 
             IconButton(
                 onClick = {
-                    selection?.let { (listId, index) ->
-                        if (listId == 1 && index < leftList.size) leftList.removeAt(index)
-                        else if (listId == 2 && index < rightList.size) rightList.removeAt(index)
+                    selection?.let { (listSide, index) ->
+                        if (listSide == ListSide.LEFT && index < leftList.size) leftList.removeAt(index)
+                        else if (listSide == ListSide.RIGHT && index < rightList.size) rightList.removeAt(index)
                         selection = null
                     }
                 },
@@ -84,7 +87,7 @@ fun ListTransferScreen() {
                     shape = RoundedCornerShape(8.dp)
                 )
             ) {
-                Icon(Icons.Filled.Delete, contentDescription = "Usuń", tint = colorResource(id = R.color.bialy))
+                Icon(Icons.Filled.Delete, contentDescription = stringResource(id = R.string.desc_delete), tint = colorResource(id = R.color.bialy))
             }
         }
 
@@ -97,12 +100,12 @@ fun ListTransferScreen() {
                 colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text("Do kupienia", color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_to_buy), color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         itemsIndexed(leftList) { index, item ->
-                            val isSelected = selection?.first == 1 && selection?.second == index
+                            val isSelected = selection?.first == ListSide.LEFT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
                                 color = if (isSelected) colorResource(id = R.color.bialy) else colorResource(id = R.color.bardzoJasnySzary),
@@ -112,7 +115,7 @@ fun ListTransferScreen() {
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(if (isSelected) colorResource(id = R.color.niebieskiGlowny) else colorResource(id = R.color.szary))
-                                    .clickable { selection = Pair(1, index) }
+                                    .clickable { selection = Pair(ListSide.LEFT, index) }
                                     .padding(8.dp)
                             )
                         }
@@ -125,7 +128,7 @@ fun ListTransferScreen() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val canMoveRight = selection?.first == 1
+                val canMoveRight = selection?.first == ListSide.LEFT
                 IconButton(
                     onClick = {
                         selection?.let { (_, index) ->
@@ -137,13 +140,13 @@ fun ListTransferScreen() {
                     enabled = canMoveRight
                 ) {
                     Icon(
-                        Icons.Filled.ArrowForward,
-                        contentDescription = "Przenieś w prawo",
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = stringResource(id = R.string.desc_move_right),
                         tint = if (canMoveRight) colorResource(id = R.color.jasnyNiebieski) else colorResource(id = R.color.bardzoJasnySzary)
                     )
                 }
 
-                val canMoveLeft = selection?.first == 2
+                val canMoveLeft = selection?.first == ListSide.RIGHT
                 IconButton(
                     onClick = {
                         selection?.let { (_, index) ->
@@ -155,8 +158,8 @@ fun ListTransferScreen() {
                     enabled = canMoveLeft
                 ) {
                     Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = "Przenieś w lewo",
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.desc_move_left),
                         tint = if (canMoveLeft) colorResource(id = R.color.jasnyNiebieski) else colorResource(id = R.color.bardzoJasnySzary)
                     )
                 }
@@ -167,12 +170,12 @@ fun ListTransferScreen() {
                 colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text("Kupione", color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_bought), color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         itemsIndexed(rightList) { index, item ->
-                            val isSelected = selection?.first == 2 && selection?.second == index
+                            val isSelected = selection?.first == ListSide.RIGHT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
                                 color = if (isSelected) colorResource(id = R.color.bialy) else colorResource(id = R.color.bardzoJasnySzary),
@@ -182,7 +185,7 @@ fun ListTransferScreen() {
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(if (isSelected) colorResource(id = R.color.niebieskiGlowny) else colorResource(id = R.color.szary))
-                                    .clickable { selection = Pair(2, index) }
+                                    .clickable { selection = Pair(ListSide.RIGHT, index) }
                                     .padding(8.dp)
                             )
                         }

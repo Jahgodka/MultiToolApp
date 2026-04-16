@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import java.time.Duration
@@ -86,7 +87,7 @@ fun DateDifferenceScreen() {
             OutlinedTextField(
                 value = startDate.format(dateFormatter),
                 onValueChange = { },
-                label = { Text("Start - Data") },
+                label = { Text(stringResource(id = R.string.label_start_date)) },
                 enabled = false,
                 modifier = Modifier
                     .weight(1f)
@@ -100,7 +101,7 @@ fun DateDifferenceScreen() {
             OutlinedTextField(
                 value = startTime.format(timeFormatter),
                 onValueChange = { },
-                label = { Text("Godzina") },
+                label = { Text(stringResource(id = R.string.label_time)) },
                 enabled = false,
                 modifier = Modifier
                     .weight(0.8f)
@@ -113,7 +114,7 @@ fun DateDifferenceScreen() {
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
-                            contentDescription = "Ustaw na teraz",
+                            contentDescription = stringResource(id = R.string.desc_set_now),
                             tint = colorResource(id = R.color.jasnyNiebieski)
                         )
                     }
@@ -133,7 +134,7 @@ fun DateDifferenceScreen() {
             OutlinedTextField(
                 value = endDate.format(dateFormatter),
                 onValueChange = { },
-                label = { Text("Koniec - Data") },
+                label = { Text(stringResource(id = R.string.label_time)) },
                 enabled = false,
                 modifier = Modifier
                     .weight(1f)
@@ -147,7 +148,7 @@ fun DateDifferenceScreen() {
             OutlinedTextField(
                 value = endTime.format(timeFormatter),
                 onValueChange = { },
-                label = { Text("Godzina") },
+                label = { Text(stringResource(id = R.string.label_time)) },
                 enabled = false,
                 modifier = Modifier
                     .weight(0.8f)
@@ -161,7 +162,7 @@ fun DateDifferenceScreen() {
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
-                            contentDescription = "Ustaw na teraz",
+                            contentDescription = stringResource(id = R.string.desc_set_now),
                             tint = colorResource(id = R.color.jasnyNiebieski)
                         )
                     }
@@ -184,7 +185,7 @@ fun DateDifferenceScreen() {
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.niebieskiGlowny))
         ) {
-            Text("Oblicz różnicę", color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.btn_calculate_diff), color = colorResource(id = R.color.bardzoJasnySzary))
         }
 
         resultDuration?.let { duration ->
@@ -203,13 +204,13 @@ fun DateDifferenceScreen() {
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text("Rozbicie różnicy czasu:", color = colorResource(id = R.color.bardzoJasnySzary), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_time_breakdown), color = colorResource(id = R.color.bardzoJasnySzary), fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text("Dni: $days", style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text("Godzin: $hours", style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text("Minut: $minutes", style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text("Sekund: $seconds", style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
+                    Text(stringResource(id = R.string.label_days, days), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
+                    Text(stringResource(id = R.string.label_hours, hours), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
+                    Text(stringResource(id = R.string.label_minutes, minutes), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
+                    Text(stringResource(id = R.string.label_seconds, seconds), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
                 }
             }
         }
