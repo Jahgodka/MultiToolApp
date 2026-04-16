@@ -16,49 +16,39 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 import java.util.Locale
 
-enum class DateUnit { DAYS, MONTHS, YEARS }
+@Composable
+fun getUnitLabel(unit: DateUnit): String {
+    return when (unit) {
+        DateUnit.DAYS -> stringResource(id = R.string.unit_days)
+        DateUnit.MONTHS -> stringResource(id = R.string.unit_months)
+        DateUnit.YEARS -> stringResource(id = R.string.unit_years)
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateCalculatorScreen() {
-    var startDate by remember { mutableStateOf(LocalDate.now()) }
-    var shiftAmount by remember { mutableStateOf("") }
-    var selectedUnit by remember { mutableStateOf(DateUnit.DAYS) }
-    var expandedUnitMenu by remember { mutableStateOf(false) }
-
-    var resultDate by remember { mutableStateOf<LocalDate?>(null) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
+fun DateCalculatorScreen(
+    viewModel: DateCalculatorViewModel = viewModel()
+) {
     val context = LocalContext.current
-
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy G", Locale.getDefault())
 
-    val calendar = Calendar.getInstance()
-    calendar.set(startDate.year, startDate.monthValue - 1, startDate.dayOfMonth)
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            startDate = LocalDate.of(year, month + 1, dayOfMonth)
-            resultDate = null
-            errorMessage = null
+            viewModel.onDateChanged(LocalDate.of(year, month + 1, dayOfMonth))
         },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
+        viewModel.startDate.year,
+        viewModel.startDate.monthValue - 1,
+        viewModel.startDate.dayOfMonth
     )
 
-    val getUnitLabel = @Composable { unit: DateUnit ->
-        when (unit) {
-            DateUnit.DAYS -> stringResource(id = R.string.unit_days)
-            DateUnit.MONTHS -> stringResource(id = R.string.unit_months)
-            DateUnit.YEARS -> stringResource(id = R.string.unit_years)
-        }
-    }
+    var expandedUnitMenu by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -68,7 +58,7 @@ fun DateCalculatorScreen() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
-            value = startDate.format(dateFormatter),
+            value = viewModel.startDate.format(dateFormatter),
             onValueChange = { },
             label = { Text(stringResource(id = R.string.label_initial_date)) },
             enabled = false,
@@ -83,22 +73,16 @@ fun DateCalculatorScreen() {
         )
 
         OutlinedTextField(
-            value = shiftAmount,
-            onValueChange = {
-                shiftAmount = it
-                errorMessage = null
-                resultDate = null
-            },
+            value = viewModel.shiftAmount,
+            onValueChange = { viewModel.onAmountChanged(it) },
             label = { Text(stringResource(id = R.string.label_shift_amount)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary,
                 selectionColors = TextSelectionColors(
                     handleColor = MaterialTheme.colorScheme.primary,
@@ -112,7 +96,7 @@ fun DateCalculatorScreen() {
             onExpandedChange = { expandedUnitMenu = !expandedUnitMenu }
         ) {
             OutlinedTextField(
-                value = getUnitLabel(selectedUnit),
+                value = getUnitLabel(viewModel.selectedUnit),
                 onValueChange = {},
                 readOnly = true,
                 label = { Text(stringResource(id = R.string.label_unit)) },
@@ -123,10 +107,8 @@ fun DateCalculatorScreen() {
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.primary,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
                 )
             )
             ExposedDropdownMenu(
@@ -138,59 +120,31 @@ fun DateCalculatorScreen() {
                     DropdownMenuItem(
                         text = { Text(getUnitLabel(unit), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         onClick = {
-                            selectedUnit = unit
+                            viewModel.onUnitChanged(unit)
                             expandedUnitMenu = false
-                            resultDate = null
                         }
                     )
                 }
             }
         }
 
-        val errInvalidNumber = stringResource(id = R.string.err_invalid_number)
-        val errShiftTooLarge = stringResource(id = R.string.err_shift_too_large)
-        val errDateOutOfBounds = stringResource(id = R.string.err_date_out_of_bounds)
+        val errInvalid = stringResource(id = R.string.err_invalid_number)
+        val errTooLarge = stringResource(id = R.string.err_shift_too_large)
+        val errOutOfBounds = stringResource(id = R.string.err_date_out_of_bounds)
 
         Button(
-            onClick = {
-                val amount = shiftAmount.toLongOrNull()
-
-                if (amount == null) {
-                    errorMessage = errInvalidNumber
-                    resultDate = null
-                    return@Button
-                }
-
-                if (amount > 100000 || amount < -100000) {
-                    errorMessage = errShiftTooLarge
-                    resultDate = null
-                    return@Button
-                }
-
-                errorMessage = null
-
-                try {
-                    resultDate = when (selectedUnit) {
-                        DateUnit.DAYS -> startDate.plusDays(amount)
-                        DateUnit.MONTHS -> startDate.plusMonths(amount)
-                        DateUnit.YEARS -> startDate.plusYears(amount)
-                    }
-                } catch (e: Exception) {
-                    errorMessage = errDateOutOfBounds
-                    resultDate = null
-                }
-            },
+            onClick = { viewModel.calculate(errInvalid, errTooLarge, errOutOfBounds) },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(stringResource(id = R.string.btn_calculate_shift), color = MaterialTheme.colorScheme.onPrimary)
         }
 
-        errorMessage?.let {
+        viewModel.errorMessage?.let {
             Text(text = it, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
         }
 
-        resultDate?.let {
+        viewModel.resultDate?.let {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

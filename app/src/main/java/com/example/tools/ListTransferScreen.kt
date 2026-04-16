@@ -20,19 +20,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class ListSide { LEFT, RIGHT }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListTransferScreen() {
-    val leftList = remember { mutableStateListOf<String>() }
-    val rightList = remember { mutableStateListOf<String>() }
-
-    var inputText by remember { mutableStateOf("") }
-    val maxLength = 20
-
-    var selection by remember { mutableStateOf<Pair<ListSide, Int>?>(null) }
+fun ListTransferScreen(
+    viewModel: ListViewModel = viewModel()
+) {
+    val selection = viewModel.selection
 
     Column(
         modifier = Modifier
@@ -46,9 +43,9 @@ fun ListTransferScreen() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = inputText,
-                onValueChange = { if (it.length <= maxLength) inputText = it },
-                label = { Text(stringResource(id = R.string.label_new_item, maxLength)) },
+                value = viewModel.inputText,
+                onValueChange = { viewModel.onInputTextChanged(it) },
+                label = { Text(stringResource(id = R.string.label_new_item, 20)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -60,26 +57,14 @@ fun ListTransferScreen() {
             )
 
             IconButton(
-                onClick = {
-                    if (inputText.isNotBlank()) {
-                        leftList.add(inputText.trim())
-                        inputText = ""
-                        selection = null
-                    }
-                },
+                onClick = { viewModel.addItem() },
                 modifier = Modifier.background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
             ) {
                 Icon(Icons.Filled.Add, contentDescription = stringResource(id = R.string.desc_add), tint = MaterialTheme.colorScheme.onPrimary)
             }
 
             IconButton(
-                onClick = {
-                    selection?.let { (listSide, index) ->
-                        if (listSide == ListSide.LEFT && index < leftList.size) leftList.removeAt(index)
-                        else if (listSide == ListSide.RIGHT && index < rightList.size) rightList.removeAt(index)
-                        selection = null
-                    }
-                },
+                onClick = { viewModel.deleteSelectedItem() },
                 enabled = selection != null,
                 modifier = Modifier.background(
                     if (selection != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
@@ -103,7 +88,7 @@ fun ListTransferScreen() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        itemsIndexed(leftList) { index, item ->
+                        itemsIndexed(viewModel.leftList) { index, item ->
                             val isSelected = selection?.first == ListSide.LEFT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
@@ -114,7 +99,7 @@ fun ListTransferScreen() {
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                                    .clickable { selection = Pair(ListSide.LEFT, index) }
+                                    .clickable { viewModel.selectItem(ListSide.LEFT, index) }
                                     .padding(8.dp)
                             )
                         }
@@ -129,13 +114,7 @@ fun ListTransferScreen() {
             ) {
                 val canMoveRight = selection?.first == ListSide.LEFT
                 IconButton(
-                    onClick = {
-                        selection?.let { (_, index) ->
-                            val item = leftList.removeAt(index)
-                            rightList.add(item)
-                            selection = null
-                        }
-                    },
+                    onClick = { viewModel.moveRight() },
                     enabled = canMoveRight
                 ) {
                     Icon(
@@ -147,13 +126,7 @@ fun ListTransferScreen() {
 
                 val canMoveLeft = selection?.first == ListSide.RIGHT
                 IconButton(
-                    onClick = {
-                        selection?.let { (_, index) ->
-                            val item = rightList.removeAt(index)
-                            leftList.add(item)
-                            selection = null
-                        }
-                    },
+                    onClick = { viewModel.moveLeft() },
                     enabled = canMoveLeft
                 ) {
                     Icon(
@@ -173,7 +146,7 @@ fun ListTransferScreen() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        itemsIndexed(rightList) { index, item ->
+                        itemsIndexed(viewModel.rightList) { index, item ->
                             val isSelected = selection?.first == ListSide.RIGHT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
@@ -184,7 +157,7 @@ fun ListTransferScreen() {
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                                    .clickable { selection = Pair(ListSide.RIGHT, index) }
+                                    .clickable { viewModel.selectItem(ListSide.RIGHT, index) }
                                     .padding(8.dp)
                             )
                         }

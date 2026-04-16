@@ -13,15 +13,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class NumberFormatType { BINARY, OCTAL, HEXADECIMAL, BASE36 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NumberConverterScreen() {
-    var inputValue by remember { mutableStateOf("") }
-    var selectedFormat by remember { mutableStateOf(NumberFormatType.BINARY) }
-
+fun NumberConverterScreen(
+    viewModel: NumberConverterViewModel = viewModel()
+) {
     val getFormatLabel = @Composable { format: NumberFormatType ->
         when (format) {
             NumberFormatType.BINARY -> stringResource(id = R.string.format_binary)
@@ -39,14 +39,8 @@ fun NumberConverterScreen() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
-            value = inputValue,
-            onValueChange = { input ->
-                val strictRegex = Regex("^(0|-|-[1-9][0-9]{0,9}|[1-9][0-9]{0,9})$")
-
-                if (input.isEmpty() || input.matches(strictRegex)) {
-                    inputValue = input
-                }
-            },
+            value = viewModel.inputValue,
+            onValueChange = { viewModel.updateInput(it) },
             label = { Text(stringResource(id = R.string.label_enter_decimal)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
@@ -74,15 +68,15 @@ fun NumberConverterScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .selectable(
-                            selected = (format == selectedFormat),
-                            onClick = { selectedFormat = format },
+                            selected = (format == viewModel.selectedFormat),
+                            onClick = { viewModel.updateFormat(format) },
                             role = Role.RadioButton
                         )
                         .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                        selected = (format == selectedFormat),
+                        selected = (format == viewModel.selectedFormat),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.colorScheme.primary,
@@ -95,7 +89,7 @@ fun NumberConverterScreen() {
             }
         }
 
-        val number = inputValue.toLongOrNull()
+        val number = viewModel.inputValue.toLongOrNull()
         val limit = 2147483647L
 
         val errNoInput = stringResource(id = R.string.err_no_input)
@@ -103,11 +97,11 @@ fun NumberConverterScreen() {
         val errLimitExceeded = stringResource(id = R.string.err_limit_exceeded)
 
         val (resultText, resultColor) = when {
-            inputValue.isEmpty() -> Pair(errNoInput, MaterialTheme.colorScheme.onSurfaceVariant)
+            viewModel.inputValue.isEmpty() -> Pair(errNoInput, MaterialTheme.colorScheme.onSurfaceVariant)
             number == null -> Pair(errInvalidFormat, MaterialTheme.colorScheme.error)
             number > limit || number < -limit -> Pair(errLimitExceeded, MaterialTheme.colorScheme.error)
             else -> {
-                val converted = when (selectedFormat) {
+                val converted = when (viewModel.selectedFormat) {
                     NumberFormatType.BINARY -> number.toString(2)
                     NumberFormatType.OCTAL -> number.toString(8)
                     NumberFormatType.HEXADECIMAL -> number.toString(16).uppercase()

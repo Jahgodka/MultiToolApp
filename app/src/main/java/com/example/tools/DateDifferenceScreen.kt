@@ -1,3 +1,5 @@
+@file:Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
+
 package com.example.tools
 
 import android.app.DatePickerDialog
@@ -16,23 +18,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import java.time.Duration
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateDifferenceScreen() {
-    var startDate by remember { mutableStateOf(LocalDate.now()) }
-    var startTime by remember { mutableStateOf(LocalTime.now()) }
-
-    var endDate by remember { mutableStateOf(LocalDate.now().plusDays(1)) }
-    var endTime by remember { mutableStateOf(LocalTime.of(12, 0)) }
-
-    var resultDuration by remember { mutableStateOf<Duration?>(null) }
-
+fun DateDifferenceScreen(
+    viewModel: DateDifferenceViewModel = viewModel()
+) {
     val context = LocalContext.current
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -40,37 +35,33 @@ fun DateDifferenceScreen() {
     val startDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            startDate = LocalDate.of(year, month + 1, dayOfMonth)
-            resultDuration = null
+            viewModel.updateStartDate(LocalDate.of(year, month + 1, dayOfMonth))
         },
-        startDate.year, startDate.monthValue - 1, startDate.dayOfMonth
+        viewModel.startDate.year, viewModel.startDate.monthValue - 1, viewModel.startDate.dayOfMonth
     )
 
     val endDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            endDate = LocalDate.of(year, month + 1, dayOfMonth)
-            resultDuration = null
+            viewModel.updateEndDate(LocalDate.of(year, month + 1, dayOfMonth))
         },
-        endDate.year, endDate.monthValue - 1, endDate.dayOfMonth
+        viewModel.endDate.year, viewModel.endDate.monthValue - 1, viewModel.endDate.dayOfMonth
     )
 
     val startTimeDialog = TimePickerDialog(
         context,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            startTime = LocalTime.of(hourOfDay, minute, 0)
-            resultDuration = null
+            viewModel.updateStartTime(LocalTime.of(hourOfDay, minute, 0))
         },
-        startTime.hour, startTime.minute, true
+        viewModel.startTime.hour, viewModel.startTime.minute, true
     )
 
     val endTimeDialog = TimePickerDialog(
         context,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            endTime = LocalTime.of(hourOfDay, minute, 0)
-            resultDuration = null
+            viewModel.updateEndTime(LocalTime.of(hourOfDay, minute, 0))
         },
-        endTime.hour, endTime.minute, true
+        viewModel.endTime.hour, viewModel.endTime.minute, true
     )
 
     Column(
@@ -85,7 +76,7 @@ fun DateDifferenceScreen() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = startDate.format(dateFormatter),
+                value = viewModel.startDate.format(dateFormatter),
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.label_start_date)) },
                 enabled = false,
@@ -99,7 +90,7 @@ fun DateDifferenceScreen() {
                 )
             )
             OutlinedTextField(
-                value = startTime.format(timeFormatter),
+                value = viewModel.startTime.format(timeFormatter),
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.label_time)) },
                 enabled = false,
@@ -107,11 +98,7 @@ fun DateDifferenceScreen() {
                     .weight(0.8f)
                     .clickable { startTimeDialog.show() },
                 trailingIcon = {
-                    IconButton(onClick = {
-                        startDate = LocalDate.now()
-                        startTime = LocalTime.now()
-                        resultDuration = null
-                    }) {
+                    IconButton(onClick = { viewModel.resetToNowStart() }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = stringResource(id = R.string.desc_set_now),
@@ -132,9 +119,9 @@ fun DateDifferenceScreen() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = endDate.format(dateFormatter),
+                value = viewModel.endDate.format(dateFormatter),
                 onValueChange = { },
-                label = { Text(stringResource(id = R.string.label_time)) },
+                label = { Text(stringResource(id = R.string.label_end_date)) },
                 enabled = false,
                 modifier = Modifier
                     .weight(1f)
@@ -146,7 +133,7 @@ fun DateDifferenceScreen() {
                 )
             )
             OutlinedTextField(
-                value = endTime.format(timeFormatter),
+                value = viewModel.endTime.format(timeFormatter),
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.label_time)) },
                 enabled = false,
@@ -154,11 +141,7 @@ fun DateDifferenceScreen() {
                     .weight(0.8f)
                     .clickable { endTimeDialog.show() },
                 trailingIcon = {
-                    IconButton(onClick = {
-                        endDate = LocalDate.now()
-                        endTime = LocalTime.now()
-                        resultDuration = null
-                    }) {
+                    IconButton(onClick = { viewModel.resetToNowEnd() }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = stringResource(id = R.string.desc_set_now),
@@ -175,19 +158,14 @@ fun DateDifferenceScreen() {
         }
 
         Button(
-            onClick = {
-                val startDateTime = LocalDateTime.of(startDate, startTime)
-                val endDateTime = LocalDateTime.of(endDate, endTime)
-
-                resultDuration = Duration.between(startDateTime, endDateTime).abs()
-            },
+            onClick = { viewModel.calculateDifference() },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(stringResource(id = R.string.btn_calculate_diff), color = MaterialTheme.colorScheme.onPrimary)
         }
 
-        resultDuration?.let { duration ->
+        viewModel.resultDuration?.let { duration ->
             val days = duration.toDays()
             val hours = duration.toHours() % 24
             val minutes = duration.toMinutes() % 60

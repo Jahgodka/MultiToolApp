@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tools.ui.theme.MultiToolAppTheme
 
 class MainActivity : AppCompatActivity() {
@@ -33,10 +34,6 @@ fun changeLanguage(languageCode: String) {
     AppCompatDelegate.setApplicationLocales(appLocale)
 }
 
-fun changeTheme(mode: Int) {
-    AppCompatDelegate.setDefaultNightMode(mode)
-}
-
 enum class AppScreen {
     DATE_CALCULATOR,
     DATE_DIFFERENCE,
@@ -47,7 +44,9 @@ enum class AppScreen {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Tools() {
+fun Tools(
+    mainViewModel: MainViewModel = viewModel()
+) {
     var currentScreen by rememberSaveable { mutableStateOf(AppScreen.DATE_CALCULATOR) }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
@@ -69,9 +68,11 @@ fun Tools() {
                 ),
                 actions = {
                     IconButton(onClick = { isMenuExpanded = true }) {
-                        Icon(Icons.Filled.MoreVert,
+                        Icon(
+                            Icons.Filled.MoreVert,
                             contentDescription = "Menu",
-                            tint = MaterialTheme.colorScheme.onPrimary)
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
                     DropdownMenu(
                         expanded = isMenuExpanded,
@@ -134,16 +135,23 @@ fun Tools() {
                         HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
 
                         DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.theme_system), color = MaterialTheme.colorScheme.onSurface) },
+                            onClick = {
+                                mainViewModel.updateTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                                isMenuExpanded = false
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.theme_light), color = MaterialTheme.colorScheme.onSurface) },
                             onClick = {
-                                changeTheme(AppCompatDelegate.MODE_NIGHT_NO)
+                                mainViewModel.updateTheme(AppCompatDelegate.MODE_NIGHT_NO)
                                 isMenuExpanded = false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.theme_dark), color = MaterialTheme.colorScheme.onSurface) },
                             onClick = {
-                                changeTheme(AppCompatDelegate.MODE_NIGHT_YES)
+                                mainViewModel.updateTheme(AppCompatDelegate.MODE_NIGHT_YES)
                                 isMenuExpanded = false
                             }
                         )

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -19,18 +20,19 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapScreen() {
-    var latInput by remember { mutableStateOf("51.7592") }
-    var lngInput by remember { mutableStateOf("19.4560") }
-
-    val rawLat = latInput.toDoubleOrNull()
-    val rawLng = lngInput.toDoubleOrNull()
+fun MapScreen(
+    viewModel: MapViewModel = viewModel()
+) {
+    val rawLat = viewModel.latInput.toDoubleOrNull()
+    val rawLng = viewModel.lngInput.toDoubleOrNull()
 
     val displayLat = rawLat?.coerceIn(-85.0511, 85.0511)
     val displayLng = rawLng?.let { ((it % 360.0) + 540.0) % 360.0 - 180.0 }
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(51.7592, 19.4560), 15f)
+        position = CameraPosition.fromLatLngZoom(
+            LatLng(displayLat ?: 51.7592, displayLng ?: 19.4560), 15f
+        )
     }
 
     if (displayLat != null && displayLng != null) {
@@ -52,12 +54,8 @@ fun MapScreen() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = latInput,
-                onValueChange = { input ->
-                    if (input.isEmpty() || input.matches(Regex("^-?[0-9]*\\.?[0-9]*$"))) {
-                        latInput = input
-                    }
-                },
+                value = viewModel.latInput,
+                onValueChange = { viewModel.updateLat(it) },
                 label = { Text(stringResource(id = R.string.label_latitude)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
@@ -70,12 +68,8 @@ fun MapScreen() {
             )
 
             OutlinedTextField(
-                value = lngInput,
-                onValueChange = { input ->
-                    if (input.isEmpty() || input.matches(Regex("^-?[0-9]*\\.?[0-9]*$"))) {
-                        lngInput = input
-                    }
-                },
+                value = viewModel.lngInput,
+                onValueChange = { viewModel.updateLng(it) },
                 label = { Text(stringResource(id = R.string.label_longitude)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),

@@ -60,6 +60,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:20.0.0")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

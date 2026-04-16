@@ -50,6 +50,7 @@
     <string name="err_no_input">No input data</string>
     <string name="err_invalid_format">Error: Invalid number format</string>
     <string name="err_limit_exceeded">Error: Limit exceeded (+/- 2,147,483,647)</string>
+    <string name="theme_system">Theme: System</string>
     <string name="theme_light">Theme: Light</string>
     <string name="theme_dark">Theme: Dark</string>
 </resources>
