@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,14 +48,14 @@ fun ListTransferScreen() {
             OutlinedTextField(
                 value = inputText,
                 onValueChange = { if (it.length <= maxLength) inputText = it },
-                label = { Text(stringResource(id = R.string.label_new_item, maxLength)) }, // Parametryzowany string
+                label = { Text(stringResource(id = R.string.label_new_item, maxLength)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski)
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -68,9 +67,9 @@ fun ListTransferScreen() {
                         selection = null
                     }
                 },
-                modifier = Modifier.background(colorResource(id = R.color.niebieskiGlowny), shape = RoundedCornerShape(8.dp))
+                modifier = Modifier.background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
             ) {
-                Icon(Icons.Filled.Add, contentDescription = stringResource(id = R.string.desc_add), tint = colorResource(id = R.color.bialy))
+                Icon(Icons.Filled.Add, contentDescription = stringResource(id = R.string.desc_add), tint = MaterialTheme.colorScheme.onPrimary)
             }
 
             IconButton(
@@ -83,11 +82,11 @@ fun ListTransferScreen() {
                 },
                 enabled = selection != null,
                 modifier = Modifier.background(
-                    if (selection != null) colorResource(id = R.color.czerwonyGlowny) else colorResource(id = R.color.szary),
+                    if (selection != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(8.dp)
                 )
             ) {
-                Icon(Icons.Filled.Delete, contentDescription = stringResource(id = R.string.desc_delete), tint = colorResource(id = R.color.bialy))
+                Icon(Icons.Filled.Delete, contentDescription = stringResource(id = R.string.desc_delete), tint = MaterialTheme.colorScheme.onPrimary)
             }
         }
 
@@ -97,10 +96,10 @@ fun ListTransferScreen() {
         ) {
             Card(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
-                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text(stringResource(id = R.string.title_to_buy), color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_to_buy), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -108,13 +107,13 @@ fun ListTransferScreen() {
                             val isSelected = selection?.first == ListSide.LEFT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
-                                color = if (isSelected) colorResource(id = R.color.bialy) else colorResource(id = R.color.bardzoJasnySzary),
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(if (isSelected) colorResource(id = R.color.niebieskiGlowny) else colorResource(id = R.color.szary))
+                                    .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
                                     .clickable { selection = Pair(ListSide.LEFT, index) }
                                     .padding(8.dp)
                             )
@@ -142,7 +141,7 @@ fun ListTransferScreen() {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = stringResource(id = R.string.desc_move_right),
-                        tint = if (canMoveRight) colorResource(id = R.color.jasnyNiebieski) else colorResource(id = R.color.bardzoJasnySzary)
+                        tint = if (canMoveRight) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -160,17 +159,17 @@ fun ListTransferScreen() {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.desc_move_left),
-                        tint = if (canMoveLeft) colorResource(id = R.color.jasnyNiebieski) else colorResource(id = R.color.bardzoJasnySzary)
+                        tint = if (canMoveLeft) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
             Card(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
-                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text(stringResource(id = R.string.title_bought), color = colorResource(id = R.color.jasnyNiebieski), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_bought), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -178,13 +177,13 @@ fun ListTransferScreen() {
                             val isSelected = selection?.first == ListSide.RIGHT && selection?.second == index
                             Text(
                                 text = "${index + 1}. $item",
-                                color = if (isSelected) colorResource(id = R.color.bialy) else colorResource(id = R.color.bardzoJasnySzary),
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(if (isSelected) colorResource(id = R.color.niebieskiGlowny) else colorResource(id = R.color.szary))
+                                    .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
                                     .clickable { selection = Pair(ListSide.RIGHT, index) }
                                     .padding(8.dp)
                             )

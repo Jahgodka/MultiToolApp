@@ -50,4 +50,6 @@
     <string name="err_no_input">Brak danych wejściowych</string>
     <string name="err_invalid_format">Błąd: Nieprawidłowy format liczby</string>
     <string name="err_limit_exceeded">Błąd: Przekroczono limit (+/- 2 147 483 647)</string>
+    <string name="theme_light">Motyw: Jasny</string>
+    <string name="theme_dark">Motyw: Ciemny</string>
 </resources>

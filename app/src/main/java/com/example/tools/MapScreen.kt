@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -63,10 +62,10 @@ fun MapScreen() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski)
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -81,10 +80,10 @@ fun MapScreen() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski)
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -95,14 +94,14 @@ fun MapScreen() {
 
             Text(
                 text = stringResource(id = R.string.msg_normalized_position, formatLat, formatLng),
-                color = colorResource(id = R.color.jasnyNiebieski),
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelMedium
             )
         }
 
         Card(
             modifier = Modifier.fillMaxSize(),
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             if (displayLat != null && displayLng != null) {
                 GoogleMap(
@@ -118,7 +117,7 @@ fun MapScreen() {
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(id = R.string.msg_enter_numbers_map), color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(stringResource(id = R.string.msg_enter_numbers_map), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

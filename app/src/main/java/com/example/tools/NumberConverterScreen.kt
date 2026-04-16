@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -52,13 +51,13 @@ fun NumberConverterScreen() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                unfocusedLabelColor = colorResource(id = R.color.bardzoJasnySzary),
-                focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                focusedBorderColor = colorResource(id = R.color.jasnyNiebieski),
-                focusedLabelColor = colorResource(id = R.color.jasnyNiebieski),
-                cursorColor = colorResource(id = R.color.jasnyNiebieski)
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary
             )
         )
 
@@ -68,7 +67,7 @@ fun NumberConverterScreen() {
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(stringResource(id = R.string.label_choose_format), color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.label_choose_format), color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             NumberFormatType.entries.forEach { format ->
                 Row(
@@ -86,12 +85,12 @@ fun NumberConverterScreen() {
                         selected = (format == selectedFormat),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = colorResource(id = R.color.jasnyNiebieski),
-                            unselectedColor = colorResource(id = R.color.bardzoJasnySzary)
+                            selectedColor = MaterialTheme.colorScheme.primary,
+                            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = getFormatLabel(format), color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(text = getFormatLabel(format), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -104,9 +103,9 @@ fun NumberConverterScreen() {
         val errLimitExceeded = stringResource(id = R.string.err_limit_exceeded)
 
         val (resultText, resultColor) = when {
-            inputValue.isEmpty() -> Pair(errNoInput, colorResource(id = R.color.bardzoJasnySzary))
-            number == null -> Pair(errInvalidFormat, colorResource(id = R.color.czerwonyGlowny))
-            number > limit || number < -limit -> Pair(errLimitExceeded, colorResource(id = R.color.czerwonyGlowny))
+            inputValue.isEmpty() -> Pair(errNoInput, MaterialTheme.colorScheme.onSurfaceVariant)
+            number == null -> Pair(errInvalidFormat, MaterialTheme.colorScheme.error)
+            number > limit || number < -limit -> Pair(errLimitExceeded, MaterialTheme.colorScheme.error)
             else -> {
                 val converted = when (selectedFormat) {
                     NumberFormatType.BINARY -> number.toString(2)
@@ -114,7 +113,7 @@ fun NumberConverterScreen() {
                     NumberFormatType.HEXADECIMAL -> number.toString(16).uppercase()
                     NumberFormatType.BASE36 -> number.toString(36).uppercase()
                 }
-                Pair(converted, colorResource(id = R.color.jasnyNiebieski))
+                Pair(converted, MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -122,13 +121,13 @@ fun NumberConverterScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(stringResource(id = R.string.title_result), color = colorResource(id = R.color.bardzoJasnySzary))
+                Text(stringResource(id = R.string.title_result), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = resultText,

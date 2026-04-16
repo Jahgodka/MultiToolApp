@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,6 +21,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateDifferenceScreen() {
@@ -93,9 +93,9 @@ fun DateDifferenceScreen() {
                     .weight(1f)
                     .clickable { startDialog.show() },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledLabelColor = colorResource(id = R.color.bardzoJasnySzary)
+                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
             OutlinedTextField(
@@ -115,14 +115,14 @@ fun DateDifferenceScreen() {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = stringResource(id = R.string.desc_set_now),
-                            tint = colorResource(id = R.color.jasnyNiebieski)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledLabelColor = colorResource(id = R.color.bardzoJasnySzary)
+                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
         }
@@ -140,9 +140,9 @@ fun DateDifferenceScreen() {
                     .weight(1f)
                     .clickable { endDialog.show() },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledLabelColor = colorResource(id = R.color.bardzoJasnySzary)
+                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
             OutlinedTextField(
@@ -154,7 +154,6 @@ fun DateDifferenceScreen() {
                     .weight(0.8f)
                     .clickable { endTimeDialog.show() },
                 trailingIcon = {
-                    // Guzik "Teraz" dla drugiej daty
                     IconButton(onClick = {
                         endDate = LocalDate.now()
                         endTime = LocalTime.now()
@@ -163,14 +162,14 @@ fun DateDifferenceScreen() {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = stringResource(id = R.string.desc_set_now),
-                            tint = colorResource(id = R.color.jasnyNiebieski)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    disabledLabelColor = colorResource(id = R.color.bardzoJasnySzary)
+                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
         }
@@ -183,9 +182,9 @@ fun DateDifferenceScreen() {
                 resultDuration = Duration.between(startDateTime, endDateTime).abs()
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.niebieskiGlowny))
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text(stringResource(id = R.string.btn_calculate_diff), color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.btn_calculate_diff), color = MaterialTheme.colorScheme.onPrimary)
         }
 
         resultDuration?.let { duration ->
@@ -198,19 +197,19 @@ fun DateDifferenceScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(stringResource(id = R.string.title_time_breakdown), color = colorResource(id = R.color.bardzoJasnySzary), fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.title_time_breakdown), color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(stringResource(id = R.string.label_days, days), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text(stringResource(id = R.string.label_hours, hours), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text(stringResource(id = R.string.label_minutes, minutes), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
-                    Text(stringResource(id = R.string.label_seconds, seconds), style = MaterialTheme.typography.bodyLarge, color = colorResource(id = R.color.jasnyNiebieski))
+                    Text(stringResource(id = R.string.label_days, days), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(id = R.string.label_hours, hours), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(id = R.string.label_minutes, minutes), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(id = R.string.label_seconds, seconds), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

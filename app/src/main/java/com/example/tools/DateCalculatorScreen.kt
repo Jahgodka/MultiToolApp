@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -77,9 +76,9 @@ fun DateCalculatorScreen() {
                 .fillMaxWidth()
                 .clickable { datePickerDialog.show() },
             colors = OutlinedTextFieldDefaults.colors(
-                disabledTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                disabledBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                disabledLabelColor = colorResource(id = R.color.bardzoJasnySzary)
+                disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
 
@@ -94,16 +93,16 @@ fun DateCalculatorScreen() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                unfocusedLabelColor = colorResource(id = R.color.bardzoJasnySzary),
-                focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                focusedBorderColor = colorResource(id = R.color.jasnyNiebieski),
-                focusedLabelColor = colorResource(id = R.color.jasnyNiebieski),
-                cursorColor = colorResource(id = R.color.jasnyNiebieski),
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary,
                 selectionColors = TextSelectionColors(
-                    handleColor = colorResource(id = R.color.jasnyNiebieski),
-                    backgroundColor = colorResource(id = R.color.jasnyNiebieski).copy(alpha = 0.3f)
+                    handleColor = MaterialTheme.colorScheme.primary,
+                    backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 )
             )
         )
@@ -122,22 +121,22 @@ fun DateCalculatorScreen() {
                     .menuAnchor()
                     .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedTextColor = colorResource(id = R.color.bardzoJasnySzary),
-                    unfocusedBorderColor = colorResource(id = R.color.bardzoJasnySzary),
-                    unfocusedLabelColor = colorResource(id = R.color.bardzoJasnySzary),
-                    focusedTextColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedBorderColor = colorResource(id = R.color.jasnyNiebieski),
-                    focusedLabelColor = colorResource(id = R.color.jasnyNiebieski),
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
                 )
             )
             ExposedDropdownMenu(
                 expanded = expandedUnitMenu,
                 onDismissRequest = { expandedUnitMenu = false },
-                modifier = Modifier.background(colorResource(id = R.color.szary))
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             ) {
-                DateUnit.values().forEach { unit ->
+                DateUnit.entries.forEach { unit ->
                     DropdownMenuItem(
-                        text = { Text(getUnitLabel(unit), color = colorResource(id = R.color.bardzoJasnySzary)) },
+                        text = { Text(getUnitLabel(unit), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         onClick = {
                             selectedUnit = unit
                             expandedUnitMenu = false
@@ -182,13 +181,13 @@ fun DateCalculatorScreen() {
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.niebieskiGlowny))
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text(stringResource(id = R.string.btn_calculate_shift), color = colorResource(id = R.color.bardzoJasnySzary))
+            Text(stringResource(id = R.string.btn_calculate_shift), color = MaterialTheme.colorScheme.onPrimary)
         }
 
         errorMessage?.let {
-            Text(text = it, color = colorResource(id = R.color.czerwonyGlowny), fontWeight = FontWeight.Bold)
+            Text(text = it, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
         }
 
         resultDate?.let {
@@ -196,17 +195,17 @@ fun DateCalculatorScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.szary))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(stringResource(id = R.string.title_new_date), color = colorResource(id = R.color.bardzoJasnySzary))
+                    Text(stringResource(id = R.string.title_new_date), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(
                         text = it.format(dateFormatter),
                         style = MaterialTheme.typography.headlineMedium,
-                        color = colorResource(id = R.color.bardzoJasnySzary),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold
                     )
                 }
