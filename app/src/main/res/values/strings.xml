@@ -53,4 +53,12 @@
     <string name="theme_system">Motyw: System</string>
     <string name="theme_light">Motyw: Jasny</string>
     <string name="theme_dark">Motyw: Ciemny</string>
+    <string name="desc_date_calc">Obliczanie nowej daty poprzez przesunięcie o dni lub lata.</string>
+    <string name="desc_date_diff">Dokładne sprawdzanie różnicy czasu między wybranymi datami.</string>
+    <string name="desc_number_conv">Szybka konwersja między systemami Bin, Oct, Hex i Base36.</string>
+    <string name="desc_map">Podgląd dowolnego miejsca na świecie na podstawie koordynatów.</string>
+    <string name="desc_list">Wygodne zarządzanie listami zakupów i zadań.</string>
+    <string name="nav_web_view">Przeglądarka Web</string>
+    <string name="desc_web_view">Szybki podgląd stron internetowych bezpośrednio w aplikacji.</string>
+    <string name="label_url">Adres URL (np. https://...)</string>
 </resources>

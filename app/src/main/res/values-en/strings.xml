@@ -53,4 +53,12 @@
     <string name="theme_system">Theme: System</string>
     <string name="theme_light">Theme: Light</string>
     <string name="theme_dark">Theme: Dark</string>
+    <string name="desc_date_calc">Calculate a new date by shifting days or years.</string>
+    <string name="desc_date_diff">Accurately check the time difference between selected dates.</string>
+    <string name="desc_number_conv">Quickly convert between Bin, Oct, Hex, and Base36 systems.</string>
+    <string name="desc_map">Preview any location in the world based on coordinates.</string>
+    <string name="desc_list">Conveniently manage shopping lists and tasks.</string>
+    <string name="nav_web_view">Web Browser</string>
+    <string name="desc_web_view">Quick preview of websites directly inside the app.</string>
+    <string name="label_url">URL Address (e.g., https://...)</string>
 </resources>
