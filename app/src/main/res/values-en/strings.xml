@@ -61,4 +61,13 @@
     <string name="nav_web_view">Web Browser</string>
     <string name="desc_web_view">Quick preview of websites directly inside the app.</string>
     <string name="label_url">URL Address (e.g., https://...)</string>
+    <string name="nav_text_filter">Text Filter</string>
+    <string name="desc_text_filter">Secure text field with dynamic character class blocking.</string>
+    <string name="label_text_input">Enter text</string>
+    <string name="label_block_upper">Block UPPERCASE letters</string>
+    <string name="label_block_lower">Block lowercase letters</string>
+    <string name="label_block_special">Block special chars &amp; spaces</string>
+    <string name="err_upper_blocked">Error: Uppercase letters are blocked!</string>
+    <string name="err_lower_blocked">Error: Lowercase letters are blocked!</string>
+    <string name="err_special_blocked">Error: Alphanumeric characters only!</string>
 </resources>

@@ -79,3 +79,11 @@ An interactive dual-list management system demonstrating advanced state handling
 A lightweight, secure utility for previewing URLs without breaking user context or leaving the application.
 * **Core:** Integrates the legacy `WebView` into Jetpack Compose via the `AndroidView` interop wrapper.
 * **UX Safety:** Intercepts the system `BackHandler` exclusively when the WebView has a valid `canGoBack()` history, preventing accidental application exits while browsing deep document trees.
+
+### 7. Text Filter
+![Text Filter Main Screen](screenshots/text_filter_main.png)
+
+A secure text input field with dynamic character class blocking, demonstrating real-time input sanitization and complex state synchronization.
+* **Core:** Utilizes Kotlin's native character evaluation (`isUpperCase()`, `isLowerCase()`, `isLetterOrDigit()`) for robust filtering that supports international character sets.
+* **State & Persistence:** Backed by `TextFilterViewModel`, which preserves both the input string and the state of the toggle switches across process death via `SharedPreferences`.
+* **UX Polish:** Implements active retroactive filtering. Toggling a restriction switch immediately sanitizes existing text and surfaces context-aware error messages to explain the destructive action to the user. Built-in mechanisms prevent UI "state bounce" during invalid keystrokes.

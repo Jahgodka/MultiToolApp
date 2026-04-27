@@ -42,6 +42,7 @@ object Routes {
     const val MAP = "map"
     const val LIST = "list"
     const val WEB_VIEW = "web_view"
+    const val TEXT_FILTER = "text_filter"
 }
 
 fun changeLanguage(languageCode: String) {
@@ -68,6 +69,7 @@ fun Tools(
         Routes.MAP -> stringResource(id = R.string.nav_map_viewer)
         Routes.LIST -> stringResource(id = R.string.nav_list_manager)
         Routes.WEB_VIEW -> stringResource(id = R.string.nav_web_view)
+        Routes.TEXT_FILTER -> stringResource(id = R.string.nav_text_filter)
         else -> stringResource(id = R.string.app_name)
     }
 
@@ -124,6 +126,10 @@ fun Tools(
                             text = { Text(stringResource(id = R.string.nav_web_view), color = MaterialTheme.colorScheme.onSurface) },
                             onClick = { navigateAndClose(Routes.WEB_VIEW) }
                         )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.nav_text_filter), color = MaterialTheme.colorScheme.onSurface) },
+                            onClick = { navigateAndClose(Routes.TEXT_FILTER) }
+                        )
 
                         HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -166,6 +172,7 @@ fun Tools(
             composable(Routes.MAP) { MapScreen() }
             composable(Routes.LIST) { ListTransferScreen() }
             composable(Routes.WEB_VIEW) { WebViewScreen() }
+            composable(Routes.TEXT_FILTER) { TextFilterScreen() }
         }
     }
 }

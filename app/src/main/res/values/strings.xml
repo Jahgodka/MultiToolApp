@@ -61,4 +61,13 @@
     <string name="nav_web_view">Przeglądarka Web</string>
     <string name="desc_web_view">Szybki podgląd stron internetowych bezpośrednio w aplikacji.</string>
     <string name="label_url">Adres URL (np. https://...)</string>
+    <string name="nav_text_filter">Filtrowanie Tekstu</string>
+    <string name="desc_text_filter">Bezpieczne pole tekstowe z dynamiczną blokadą klas znaków.</string>
+    <string name="label_text_input">Wprowadź tekst</string>
+    <string name="label_block_upper">Blokuj WIELKIE litery</string>
+    <string name="label_block_lower">Blokuj małe litery</string>
+    <string name="label_block_special">Blokuj znaki specjalne i spacje</string>
+    <string name="err_upper_blocked">Błąd: Wielkie litery są zablokowane!</string>
+    <string name="err_lower_blocked">Błąd: Małe litery są zablokowane!</string>
+    <string name="err_special_blocked">Błąd: Tylko znaki alfanumeryczne!</string>
 </resources>
