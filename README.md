@@ -87,3 +87,19 @@ A secure text input field with dynamic character class blocking, demonstrating r
 * **Core:** Utilizes Kotlin's native character evaluation (`isUpperCase()`, `isLowerCase()`, `isLetterOrDigit()`) for robust filtering that supports international character sets.
 * **State & Persistence:** Backed by `TextFilterViewModel`, which preserves both the input string and the state of the toggle switches across process death via `SharedPreferences`.
 * **UX Polish:** Implements active retroactive filtering. Toggling a restriction switch immediately sanitizes existing text and surfaces context-aware error messages to explain the destructive action to the user. Built-in mechanisms prevent UI "state bounce" during invalid keystrokes.
+
+### 8. Password Validator
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="screenshots/password_validate_main.png" alt="Password Validator Main" width="300"></td>
+      <td><img src="screenshots/password_validate_window.png" alt="Password Validator Dialog" width="300"></td>
+    </tr>
+  </table>
+</div>
+
+A real-time password strength validator with dynamically configurable requirement thresholds.
+* **Core & Security:** Utilizes `KeyboardType.Password` to prevent the OS keyboard from learning inputs via dictionary caching, alongside dynamic `PasswordVisualTransformation` for a standard visibility toggle.
+* **State Management:** The `PasswordViewModel` strictly separates persistent configuration limits (saved via `SharedPreferences`) from the volatile password input string, ensuring sensitive keystrokes are never written to local storage.
+* **UI/UX:** Features a reactive checklist that provides instant visual feedback (color and icon state shifts) evaluated in real-time as the user types.
+* **Robust Configuration:** The requirements dialog avoids raw text inputs entirely. By using custom Stepper controls (+/- buttons) with hardcoded min/max boundaries, the architecture physically prevents `NumberFormatException` crashes, out-of-bounds states, and malicious clipboard pastes. It also utilizes isolated temporary states to allow safe cancellation of ongoing edits.

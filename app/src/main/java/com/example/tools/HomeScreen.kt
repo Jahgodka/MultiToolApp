@@ -27,7 +27,8 @@ fun HomeScreen(navController: NavController) {
         ToolItem(R.string.nav_map_viewer, Routes.MAP, R.string.desc_map),
         ToolItem(R.string.nav_list_manager, Routes.LIST, R.string.desc_list),
         ToolItem(R.string.nav_web_view, Routes.WEB_VIEW, R.string.desc_web_view),
-        ToolItem(R.string.nav_text_filter, Routes.TEXT_FILTER, R.string.desc_text_filter)
+        ToolItem(R.string.nav_text_filter, Routes.TEXT_FILTER, R.string.desc_text_filter),
+        ToolItem(R.string.nav_password_validator, Routes.PASSWORD_VAL, R.string.desc_password_validator)
     )
 
     LazyColumn(

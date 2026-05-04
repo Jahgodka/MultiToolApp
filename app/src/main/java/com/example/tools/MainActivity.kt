@@ -43,6 +43,7 @@ object Routes {
     const val LIST = "list"
     const val WEB_VIEW = "web_view"
     const val TEXT_FILTER = "text_filter"
+    const val PASSWORD_VAL = "password_val"
 }
 
 fun changeLanguage(languageCode: String) {
@@ -70,6 +71,7 @@ fun Tools(
         Routes.LIST -> stringResource(id = R.string.nav_list_manager)
         Routes.WEB_VIEW -> stringResource(id = R.string.nav_web_view)
         Routes.TEXT_FILTER -> stringResource(id = R.string.nav_text_filter)
+        Routes.PASSWORD_VAL -> stringResource(id = R.string.nav_password_validator)
         else -> stringResource(id = R.string.app_name)
     }
 
@@ -130,6 +132,10 @@ fun Tools(
                             text = { Text(stringResource(id = R.string.nav_text_filter), color = MaterialTheme.colorScheme.onSurface) },
                             onClick = { navigateAndClose(Routes.TEXT_FILTER) }
                         )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.nav_password_validator), color = MaterialTheme.colorScheme.onSurface) },
+                            onClick = { navigateAndClose(Routes.PASSWORD_VAL) }
+                        )
 
                         HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -173,6 +179,7 @@ fun Tools(
             composable(Routes.LIST) { ListTransferScreen() }
             composable(Routes.WEB_VIEW) { WebViewScreen() }
             composable(Routes.TEXT_FILTER) { TextFilterScreen() }
+            composable(Routes.PASSWORD_VAL) { PasswordScreen() }
         }
     }
 }

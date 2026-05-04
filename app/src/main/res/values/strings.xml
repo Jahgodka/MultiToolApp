@@ -70,4 +70,16 @@
     <string name="err_upper_blocked">Błąd: Wielkie litery są zablokowane!</string>
     <string name="err_lower_blocked">Błąd: Małe litery są zablokowane!</string>
     <string name="err_special_blocked">Błąd: Tylko znaki alfanumeryczne!</string>
+    <string name="nav_password_validator">Walidator Hasła</string>
+    <string name="desc_password_validator">Sprawdzanie siły hasła na podstawie rygorystycznych, własnych reguł.</string>
+    <string name="label_password_input">Wprowadź hasło</string>
+    <string name="dialog_title_limits">Konfiguracja Wymagań</string>
+    <string name="label_min_length">Minimalna długość</string>
+    <string name="label_min_digits">Ilość cyfr</string>
+    <string name="label_min_special">Ilość znaków spec.</string>
+    <string name="btn_save">Zapisz</string>
+    <string name="btn_cancel">Anuluj</string>
+    <string name="btn_configure">Konfiguruj limity</string>
+    <string name="req_met">Spełniono</string>
+    <string name="req_unmet">Brakuje</string>
 </resources>

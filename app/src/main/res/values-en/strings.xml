@@ -70,4 +70,16 @@
     <string name="err_upper_blocked">Error: Uppercase letters are blocked!</string>
     <string name="err_lower_blocked">Error: Lowercase letters are blocked!</string>
     <string name="err_special_blocked">Error: Alphanumeric characters only!</string>
+    <string name="nav_password_validator">Password Validator</string>
+    <string name="desc_password_validator">Check password strength based on strict, custom rules.</string>
+    <string name="label_password_input">Enter password</string>
+    <string name="dialog_title_limits">Requirements Config</string>
+    <string name="label_min_length">Minimum length</string>
+    <string name="label_min_digits">Number of digits</string>
+    <string name="label_min_special">Special characters</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_configure">Configure limits</string>
+    <string name="req_met">Met</string>
+    <string name="req_unmet">Missing</string>
 </resources>
